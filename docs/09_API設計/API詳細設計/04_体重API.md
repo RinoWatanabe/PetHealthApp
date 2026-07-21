@@ -8,7 +8,7 @@
 
 ### エンドポイント
 
-GET /api/pets/{id}/weight-records
+GET /api/pets/{petId}/weight-records
 
 ### リクエスト
 

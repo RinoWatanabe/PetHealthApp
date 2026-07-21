@@ -8,7 +8,7 @@
 
 ### エンドポイント
 
-GET /api/pets/{id}/notes
+GET /api/pets/{petId}/notes
 
 ### リクエスト
 

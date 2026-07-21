@@ -1,5 +1,6 @@
 package com.rino.pethealthapp.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,5 +76,18 @@ public class WeightRecordService {
         WeightRecordEntity targetWeightRecord = weightRecordRepository.findById(id).orElseThrow();
 
         weightRecordRepository.delete(targetWeightRecord);
+    }
+
+    /**
+     * 指定したペットの最新体重情報を取得する.
+     * 
+     * @param petId ペットID
+     * @return 最新体重情報
+     */
+    public Optional<WeightRecordEntity> findLatestWeightByPetId(Long petId) {
+
+        return weightRecordRepository.findTopByPet_IdAndCheckDateLessThanEqualOrderByCheckDateDesc(
+                petId,
+                LocalDate.now());
     }
 }
