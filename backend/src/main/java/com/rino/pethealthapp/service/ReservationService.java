@@ -1,5 +1,6 @@
 package com.rino.pethealthapp.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,5 +77,31 @@ public class ReservationService {
         ReservationEntity targetReservation = reservationRepository.findById(id).orElseThrow();
 
         reservationRepository.delete(targetReservation);
+    }
+
+    /**
+     * 指定したペットの前回通院情報を取得する.
+     * 
+     * @param petId ペットID
+     * @return 前回通院情報
+     */
+    public Optional<ReservationEntity> findLatestVisitByPetId(Long petId) {
+
+        return reservationRepository
+                .findTopByPet_IdAndAppointmentDateLessThanEqualOrderByAppointmentDateDesc(
+                        petId,
+                        LocalDate.now());
+    }
+
+    /**
+     * 今日以降の予約一覧を取得する.
+     *
+     * @return 予約日の近い順に並んだ予約一覧
+     */
+    public List<ReservationEntity> findUpcomingReservations() {
+
+        return reservationRepository
+                .findByAppointmentDateGreaterThanEqualOrderByAppointmentDateAsc(
+                        LocalDate.now());
     }
 }

@@ -1,5 +1,6 @@
 package com.rino.pethealthapp.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +77,19 @@ public class NoteService {
 
         noteRepository.delete(targetNote);
 
+    }
+
+    /**
+     * 指定したペットの最新のひとこと記録を取得する.
+     * 
+     * @param petId ペットID
+     * @return 最新ひとこと記録
+     */
+    public Optional<NoteEntity> findLatestNoteByPetId(Long petId) {
+        
+        return noteRepository.findTopByPet_IdAndRecordDateLessThanEqualOrderByRecordDateDesc(
+                petId,
+                LocalDate.now());
     }
 
 }
