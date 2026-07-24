@@ -6,16 +6,28 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.rino.pethealthapp.dto.request.ReservationRequest;
+import com.rino.pethealthapp.entity.HospitalEntity;
+import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.entity.ReservationEntity;
+import com.rino.pethealthapp.repository.HospitalRepository;
+import com.rino.pethealthapp.repository.PetRepository;
 import com.rino.pethealthapp.repository.ReservationRepository;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final PetRepository petRepository;
+    private final HospitalRepository hospitalRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(
+            ReservationRepository reservationRepository,
+            PetRepository petRepository,
+            HospitalRepository hospitalRepository) {
         this.reservationRepository = reservationRepository;
+        this.petRepository = petRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     /**
@@ -41,28 +53,78 @@ public class ReservationService {
     /**
      * 予約を登録する.
      * 
-     * @param reservationEntity 登録する予約情報
+     * @param reservationRequest 登録する予約情報
      * @return 登録した予約の情報
      */
-    public ReservationEntity create(ReservationEntity reservationEntity) {
+    public ReservationEntity create(ReservationRequest reservationRequest) {
+
+        ReservationEntity reservationEntity = new ReservationEntity();
+
+        // （1）ペットIDからPetEntityを取得
+        Long petId = reservationRequest.getPetId();
+
+        PetEntity pet = petRepository
+                .findById(petId)
+                .orElseThrow();
+
+        reservationEntity.setPet(pet);
+
+        // （2）予約日
+        reservationEntity.setAppointmentDate(reservationRequest.getAppointmentDate());
+
+        // （3）病院名からHospitalEntityを取得
+        HospitalEntity hospital = hospitalRepository
+                .findByHospitalName(reservationRequest.getHospitalName())
+                .orElseGet(() -> {
+                    HospitalEntity newHospital = new HospitalEntity();
+                    newHospital.setHospitalName(reservationRequest.getHospitalName());
+                    return hospitalRepository.save(newHospital);
+                });
+
+        reservationEntity.setHospital(hospital);
+
+        // （4）通院の目的
+        reservationEntity.setVisitReason(reservationRequest.getVisitReason());
+
         return reservationRepository.save(reservationEntity);
     }
 
     /**
      * 指定したIDの予約情報を更新する.
      * 
-     * @param id                予約ID
-     * @param reservationEntity 更新する予約情報
+     * @param id                 予約ID
+     * @param reservationRequest 更新する予約情報
      * @return 更新した予約情報
      */
-    public ReservationEntity update(Long id, ReservationEntity reservationEntity) {
+    public ReservationEntity update(Long id, ReservationRequest reservationRequest) {
 
         ReservationEntity targetReservation = reservationRepository.findById(id).orElseThrow();
 
-        targetReservation.setPet(reservationEntity.getPet());
-        targetReservation.setAppointmentDate(reservationEntity.getAppointmentDate());
-        targetReservation.setHospital(reservationEntity.getHospital());
-        targetReservation.setVisitReason(reservationEntity.getVisitReason());
+        // （1）ペットIDからPetEntityを取得
+        Long petId = reservationRequest.getPetId();
+
+        PetEntity pet = petRepository
+                .findById(petId)
+                .orElseThrow();
+
+        targetReservation.setPet(pet);
+
+        // （2）予約日
+        targetReservation.setAppointmentDate(reservationRequest.getAppointmentDate());
+
+        // （3）病院名からHospitalEntityを取得
+        HospitalEntity hospital = hospitalRepository
+                .findByHospitalName(reservationRequest.getHospitalName())
+                .orElseGet(() -> {
+                    HospitalEntity newHospital = new HospitalEntity();
+                    newHospital.setHospitalName(reservationRequest.getHospitalName());
+                    return hospitalRepository.save(newHospital);
+                });
+
+        targetReservation.setHospital(hospital);
+
+        // （4）通院の目的
+        targetReservation.setVisitReason(reservationRequest.getVisitReason());
 
         return reservationRepository.save(targetReservation);
     }

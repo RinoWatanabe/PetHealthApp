@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rino.pethealthapp.dto.HomeResponse;
+import com.rino.pethealthapp.dto.response.HomeResponse;
 import com.rino.pethealthapp.service.HomeService;
 
 @RestController

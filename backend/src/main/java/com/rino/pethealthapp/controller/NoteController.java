@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rino.pethealthapp.dto.request.NoteRequest;
 import com.rino.pethealthapp.entity.NoteEntity;
 import com.rino.pethealthapp.service.NoteService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -50,26 +53,27 @@ public class NoteController {
     /**
      * ひとことを登録する.
      * 
-     * @param noteEntity 登録するひとこと情報
+     * @param noteRequest 登録するひとこと情報
      * @return 登録したひとこと情報
      */
     @PostMapping("/notes")
-    public NoteEntity create(@RequestBody NoteEntity noteEntity) {
-        return noteService.create(noteEntity);
+    public NoteEntity create(
+            @Valid @RequestBody NoteRequest noteRequest) {
+        return noteService.create(noteRequest);
     }
 
     /**
      * 指定したIDのひとこと情報を更新する.
      * 
-     * @param id         ひとことID
-     * @param noteEntity 更新するひとこと情報
+     * @param id          ひとことID
+     * @param noteRequest 更新するひとこと情報
      * @return 更新したひとこと情報
      */
     @PutMapping("/notes/{id}")
     public NoteEntity update(
             @PathVariable Long id,
-            @RequestBody NoteEntity noteEntity) {
-        return noteService.update(id, noteEntity);
+            @Valid @RequestBody NoteRequest noteRequest) {
+        return noteService.update(id, noteRequest);
     }
 
     /**
