@@ -1,4 +1,4 @@
-package com.rino.pethealthapp.dto;
+package com.rino.pethealthapp.dto.response;
 
 public class PetSummaryResponse {
 

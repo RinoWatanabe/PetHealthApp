@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.rino.pethealthapp.dto.HomeResponse;
-import com.rino.pethealthapp.dto.LastVisitResponse;
-import com.rino.pethealthapp.dto.LatestNoteResponse;
-import com.rino.pethealthapp.dto.LatestWeightResponse;
-import com.rino.pethealthapp.dto.PetSummaryResponse;
-import com.rino.pethealthapp.dto.UpcomingReservationResponse;
+import com.rino.pethealthapp.dto.response.HomeResponse;
+import com.rino.pethealthapp.dto.response.LastVisitResponse;
+import com.rino.pethealthapp.dto.response.LatestNoteResponse;
+import com.rino.pethealthapp.dto.response.LatestWeightResponse;
+import com.rino.pethealthapp.dto.response.PetSummaryResponse;
+import com.rino.pethealthapp.dto.response.UpcomingReservationResponse;
 import com.rino.pethealthapp.entity.NoteEntity;
 import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.entity.ReservationEntity;

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.rino.pethealthapp.dto.request.PetRequest;
 import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.repository.PetRepository;
 
@@ -39,10 +40,20 @@ public class PetService {
     /**
      * ペットを登録する.
      * 
-     * @param petEntity 登録するペット情報
+     * @param petRequest 登録するペット情報
      * @return 登録したペットの情報
      */
-    public PetEntity create(PetEntity petEntity) {
+    public PetEntity create(PetRequest petRequest) {
+
+        PetEntity petEntity = new PetEntity();
+
+        petEntity.setName(petRequest.getPetName());
+        petEntity.setPetType(petRequest.getPetType());
+        petEntity.setCustomPetType(petRequest.getCustomPetType());
+        petEntity.setAge(petRequest.getAge());
+        petEntity.setGender(petRequest.getGender());
+        petEntity.setBirthday(petRequest.getBirthday());
+
         return petRepository.save(petEntity);
     }
 
@@ -50,10 +61,10 @@ public class PetService {
      * 指定したIDのペット情報を更新する.
      * 
      * @param id ペットID
-     * @param petEntity 更新するペット情報
+     * @param petRequest 更新するペット情報
      * @return 更新したペットの情報
      */
-    public PetEntity update(Long id, PetEntity petEntity) {
+    public PetEntity update(Long id, PetRequest petRequest) {
         
         // ↓ 学習用メモ
         // Repositoryへ指示（まずID指定で情報をとってきてもらう）
@@ -61,12 +72,12 @@ public class PetService {
 
         // ↓ 学習用メモ
         // ここで画面から受け取った情報に更新する
-        targetPet.setName(petEntity.getName());
-        targetPet.setPetType(petEntity.getPetType());
-        targetPet.setCustomPetType(petEntity.getCustomPetType());
-        targetPet.setAge(petEntity.getAge());
-        targetPet.setGender(petEntity.getGender());
-        targetPet.setBirthday(petEntity.getBirthday());
+        targetPet.setName(petRequest.getPetName());
+        targetPet.setPetType(petRequest.getPetType());
+        targetPet.setCustomPetType(petRequest.getCustomPetType());
+        targetPet.setAge(petRequest.getAge());
+        targetPet.setGender(petRequest.getGender());
+        targetPet.setBirthday(petRequest.getBirthday());
 
         // ↓ 学習用メモ
         // Repositoryへ更新したペット情報を保存するよう依頼する

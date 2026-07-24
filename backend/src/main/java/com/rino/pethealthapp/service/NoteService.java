@@ -6,16 +6,23 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.rino.pethealthapp.dto.request.NoteRequest;
 import com.rino.pethealthapp.entity.NoteEntity;
+import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.repository.NoteRepository;
+import com.rino.pethealthapp.repository.PetRepository;
 
 @Service
 public class NoteService {
 
     private final NoteRepository noteRepository;
+    private final PetRepository petRepository;
 
-    public NoteService(NoteRepository noteRepository) {
+    public NoteService(
+            NoteRepository noteRepository,
+            PetRepository petRepository) {
         this.noteRepository = noteRepository;
+        this.petRepository = petRepository;
     }
 
     /**
@@ -41,10 +48,28 @@ public class NoteService {
     /**
      * ひとことを登録する.
      * 
-     * @param noteEntity 登録するひとこと情報
+     * @param noteRequest 登録するひとこと情報
      * @return 登録したひとこと情報
      */
-    public NoteEntity create(NoteEntity noteEntity) {
+    public NoteEntity create(NoteRequest noteRequest) {
+
+        NoteEntity noteEntity = new NoteEntity();
+
+        // （1）ペットIDからPetEntityを取得
+        Long petId = noteRequest.getPetId();
+
+        PetEntity pet = petRepository
+                .findById(petId)
+                .orElseThrow();
+
+        noteEntity.setPet(pet);
+
+        // （2）記録日
+        noteEntity.setRecordDate(noteRequest.getRecordDate());
+
+        // （3）ひとこと
+        noteEntity.setNote(noteRequest.getNote());
+
         return noteRepository.save(noteEntity);
     }
 
@@ -52,16 +77,27 @@ public class NoteService {
      * 指定したIDのひとこと情報を更新する.
      *
      * @param id         ひとことID
-     * @param noteEntity 更新するひとこと情報
+     * @param noteRequest 更新するひとこと情報
      * @return 更新したひとこと情報
      */
-    public NoteEntity update(Long id, NoteEntity noteEntity) {
+    public NoteEntity update(Long id, NoteRequest noteRequest) {
 
         NoteEntity targetNote = noteRepository.findById(id).orElseThrow();
 
-        targetNote.setPet(noteEntity.getPet());
-        targetNote.setRecordDate(noteEntity.getRecordDate());
-        targetNote.setNote(noteEntity.getNote());
+        // （1）ペットIDからPetEntityを取得
+        Long petId = noteRequest.getPetId();
+
+        PetEntity pet = petRepository
+                .findById(petId)
+                .orElseThrow();
+
+        targetNote.setPet(pet);
+
+        // （2）記録日
+        targetNote.setRecordDate(noteRequest.getRecordDate());
+
+        // （3）ひとこと
+        targetNote.setNote(noteRequest.getNote());
 
         return noteRepository.save(targetNote);
     }
@@ -86,7 +122,7 @@ public class NoteService {
      * @return 最新ひとこと記録
      */
     public Optional<NoteEntity> findLatestNoteByPetId(Long petId) {
-        
+
         return noteRepository.findTopByPet_IdAndRecordDateLessThanEqualOrderByRecordDateDesc(
                 petId,
                 LocalDate.now());

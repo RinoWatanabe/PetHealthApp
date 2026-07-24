@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rino.pethealthapp.dto.request.PetRequest;
 import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.service.PetService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -48,26 +51,27 @@ public class PetController {
     /**
      * ペットを登録する.
      * 
-     * @param petEntity 登録するペット情報
+     * @param petRequest 登録するペット情報
      * @return 登録したペットの情報
      */
     @PostMapping("/pets")
-    public PetEntity create(@RequestBody PetEntity petEntity) {
-        return petService.create(petEntity);
+    public PetEntity create(
+            @Valid @RequestBody PetRequest petRequest) {
+        return petService.create(petRequest);
     }
 
     /**
      * 指定したIDのペット情報を更新する.
      * 
      * @param id        ペットID
-     * @param petEntity 更新するペット情報
+     * @param petRequest 更新するペット情報
      * @return 更新したペットの情報
      */
     @PutMapping("/pets/{id}")
     public PetEntity update(
             @PathVariable Long id,
-            @RequestBody PetEntity petEntity) {
-        return petService.update(id, petEntity);
+            @Valid @RequestBody PetRequest petRequest) {
+        return petService.update(id, petRequest);
     }
 
 }

@@ -6,16 +6,23 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.rino.pethealthapp.dto.request.WeightRecordRequest;
+import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.entity.WeightRecordEntity;
+import com.rino.pethealthapp.repository.PetRepository;
 import com.rino.pethealthapp.repository.WeightRecordRepository;
 
 @Service
 public class WeightRecordService {
 
     private final WeightRecordRepository weightRecordRepository;
+    private final PetRepository petRepository;
 
-    public WeightRecordService(WeightRecordRepository weightRecordRepository) {
+    public WeightRecordService(
+            WeightRecordRepository weightRecordRepository,
+            PetRepository petRepository) {
         this.weightRecordRepository = weightRecordRepository;
+        this.petRepository = petRepository;
     }
 
     /**
@@ -41,27 +48,56 @@ public class WeightRecordService {
     /**
      * 体重を登録する.
      *
-     * @param weightRecordEntity 登録する体重情報
+     * @param weightRecordRequest 登録する体重情報
      * @return 登録した体重情報
      */
-    public WeightRecordEntity create(WeightRecordEntity weightRecordEntity) {
+    public WeightRecordEntity create(WeightRecordRequest weightRecordRequest) {
+
+        WeightRecordEntity weightRecordEntity = new WeightRecordEntity();
+
+        // (1) ペットIDからPetEntityを取得
+        Long petId = weightRecordRequest.getPetId();
+
+        PetEntity pet = petRepository
+                .findById(petId)
+                .orElseThrow();
+
+        weightRecordEntity.setPet(pet);
+
+        // （2）測定日
+        weightRecordEntity.setCheckDate(weightRecordRequest.getCheckDate());
+
+        // （3）体重
+        weightRecordEntity.setWeight(weightRecordRequest.getWeight());
+
         return weightRecordRepository.save(weightRecordEntity);
     }
 
     /**
      * 指定したIDの体重情報を更新する.
      *
-     * @param id                 体重ID
-     * @param weightRecordEntity 更新する体重情報
+     * @param id                  体重ID
+     * @param weightRecordRequest 更新する体重情報
      * @return 更新した体重情報
      */
-    public WeightRecordEntity update(Long id, WeightRecordEntity weightRecordEntity) {
+    public WeightRecordEntity update(Long id, WeightRecordRequest weightRecordRequest) {
 
         WeightRecordEntity targetWeightRecord = weightRecordRepository.findById(id).orElseThrow();
 
-        targetWeightRecord.setPet(weightRecordEntity.getPet());
-        targetWeightRecord.setCheckDate(weightRecordEntity.getCheckDate());
-        targetWeightRecord.setWeight(weightRecordEntity.getWeight());
+        // （1）ペットIDからPetEntityを取得
+        Long petId = weightRecordRequest.getPetId();
+
+        PetEntity pet = petRepository
+                .findById(petId)
+                .orElseThrow();
+
+        targetWeightRecord.setPet(pet);
+
+        // （2）測定日
+        targetWeightRecord.setCheckDate(weightRecordRequest.getCheckDate());
+
+        // （3）体重
+        targetWeightRecord.setWeight(weightRecordRequest.getWeight());
 
         return weightRecordRepository.save(targetWeightRecord);
     }

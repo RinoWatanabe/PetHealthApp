@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rino.pethealthapp.dto.request.WeightRecordRequest;
 import com.rino.pethealthapp.entity.WeightRecordEntity;
 import com.rino.pethealthapp.service.WeightRecordService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -50,29 +53,27 @@ public class WeightRecordController {
     /**
      * 体重を登録する.
      *
-     * @param weightRecordEntity 登録する体重情報
+     * @param weightRecordRequest 登録する体重情報
      * @return 登録した体重情報
      */
     @PostMapping("/weight-records")
     public WeightRecordEntity create(
-            @RequestBody WeightRecordEntity weightRecordEntity) {
-
-        return weightRecordService.create(weightRecordEntity);
+            @Valid @RequestBody WeightRecordRequest weightRecordRequest) {
+        return weightRecordService.create(weightRecordRequest);
     }
 
     /**
      * 指定したIDの体重情報を更新する.
      *
-     * @param id                 体重ID
-     * @param weightRecordEntity 更新する体重情報
+     * @param id                  体重ID
+     * @param weightRecordRequest 更新する体重情報
      * @return 更新した体重情報
      */
     @PutMapping("/weight-records/{id}")
     public WeightRecordEntity update(
             @PathVariable Long id,
-            @RequestBody WeightRecordEntity weightRecordEntity) {
-
-        return weightRecordService.update(id, weightRecordEntity);
+            @Valid @RequestBody WeightRecordRequest weightRecordRequest) {
+        return weightRecordService.update(id, weightRecordRequest);
     }
 
     /**

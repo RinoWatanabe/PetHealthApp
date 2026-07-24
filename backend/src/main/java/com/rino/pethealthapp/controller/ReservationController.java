@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rino.pethealthapp.dto.request.ReservationRequest;
 import com.rino.pethealthapp.entity.ReservationEntity;
 import com.rino.pethealthapp.service.ReservationService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -50,26 +53,27 @@ public class ReservationController {
     /**
      * 予約を登録する.
      * 
-     * @param reservationEntity 登録する予約情報
+     * @param reservationRequest 登録する予約情報
      * @return 登録した予約の情報
      */
     @PostMapping("/reservations")
-    public ReservationEntity create(@RequestBody ReservationEntity reservationEntity) {
-        return reservationService.create(reservationEntity);
+    public ReservationEntity create(
+            @Valid @RequestBody ReservationRequest reservationRequest) {
+        return reservationService.create(reservationRequest);
     }
 
     /**
      * 指定したIDの予約情報を更新する.
      * 
      * @param id                予約ID
-     * @param reservationEntity 更新する予約情報
+     * @param reservationRequest 更新する予約情報
      * @return 更新した予約情報
      */
     @PutMapping("/reservations/{id}")
     public ReservationEntity update(
             @PathVariable Long id,
-            @RequestBody ReservationEntity reservationEntity) {
-        return reservationService.update(id, reservationEntity);
+            @Valid @RequestBody ReservationRequest reservationRequest) {
+        return reservationService.update(id, reservationRequest);
     }
 
     /**
@@ -79,7 +83,6 @@ public class ReservationController {
      */
     @DeleteMapping("/reservations/{id}")
     public void delete(@PathVariable Long id) {
-        
         reservationService.delete(id);
     }
 
