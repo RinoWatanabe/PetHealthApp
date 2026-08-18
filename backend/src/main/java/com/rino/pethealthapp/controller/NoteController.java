@@ -1,7 +1,6 @@
 package com.rino.pethealthapp.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +45,7 @@ public class NoteController {
      * @return ひとこと情報
      */
     @GetMapping("/notes/{id}")
-    public Optional<NoteEntity> findById(@PathVariable Long id) {
+    public NoteEntity findById(@PathVariable Long id) {
         return noteService.findById(id);
     }
 

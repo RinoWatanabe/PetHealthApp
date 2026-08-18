@@ -1,7 +1,6 @@
 package com.rino.pethealthapp.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +43,7 @@ public class PetController {
      * @return ペット情報
      */
     @GetMapping("/pets/{id}")
-    public Optional<PetEntity> findById(@PathVariable Long id) {
+    public PetEntity findById(@PathVariable Long id) {
         return petService.findById(id);
     }
 

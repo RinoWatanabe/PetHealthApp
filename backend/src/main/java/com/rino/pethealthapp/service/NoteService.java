@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rino.pethealthapp.dto.request.NoteRequest;
 import com.rino.pethealthapp.entity.NoteEntity;
 import com.rino.pethealthapp.entity.PetEntity;
+import com.rino.pethealthapp.exception.ResourceNotFoundException;
 import com.rino.pethealthapp.repository.NoteRepository;
 import com.rino.pethealthapp.repository.PetRepository;
 
@@ -41,8 +42,10 @@ public class NoteService {
      * @param id ひとことID
      * @return ひとこと情報
      */
-    public Optional<NoteEntity> findById(Long id) {
-        return noteRepository.findById(id);
+    public NoteEntity findById(Long id) {
+        return noteRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ひとこと情報が見つかりません"));
     }
 
     /**
@@ -60,7 +63,7 @@ public class NoteService {
 
         PetEntity pet = petRepository
                 .findById(petId)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         noteEntity.setPet(pet);
 
@@ -82,14 +85,16 @@ public class NoteService {
      */
     public NoteEntity update(Long id, NoteRequest noteRequest) {
 
-        NoteEntity targetNote = noteRepository.findById(id).orElseThrow();
+        NoteEntity targetNote = noteRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ひとこと情報が見つかりません"));
 
         // （1）ペットIDからPetEntityを取得
         Long petId = noteRequest.getPetId();
 
         PetEntity pet = petRepository
                 .findById(petId)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         targetNote.setPet(pet);
 
@@ -109,7 +114,9 @@ public class NoteService {
      */
     public void delete(Long id) {
 
-        NoteEntity targetNote = noteRepository.findById(id).orElseThrow();
+        NoteEntity targetNote = noteRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ひとこと情報が見つかりません"));
 
         noteRepository.delete(targetNote);
 

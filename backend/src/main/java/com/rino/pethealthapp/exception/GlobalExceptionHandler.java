@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.rino.pethealthapp.dto.response.ApiErrorResponse;
 import com.rino.pethealthapp.dto.response.ErrorResponse;
 import com.rino.pethealthapp.dto.response.ValidationErrorResponse;
 
@@ -34,9 +35,22 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(errors);
 
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(errorResponse);
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
 
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(
+            ResourceNotFoundException exception) {
+
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
 }
