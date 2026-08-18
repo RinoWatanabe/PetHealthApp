@@ -1,7 +1,6 @@
 package com.rino.pethealthapp.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +45,7 @@ public class WeightRecordController {
      * @return 体重情報
      */
     @GetMapping("/weight-records/{id}")
-    public Optional<WeightRecordEntity> findById(@PathVariable Long id) {
+    public WeightRecordEntity findById(@PathVariable Long id) {
         return weightRecordService.findById(id);
     }
 

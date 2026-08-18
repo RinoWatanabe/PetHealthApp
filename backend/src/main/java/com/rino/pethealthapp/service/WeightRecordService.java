@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rino.pethealthapp.dto.request.WeightRecordRequest;
 import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.entity.WeightRecordEntity;
+import com.rino.pethealthapp.exception.ResourceNotFoundException;
 import com.rino.pethealthapp.repository.PetRepository;
 import com.rino.pethealthapp.repository.WeightRecordRepository;
 
@@ -41,8 +42,10 @@ public class WeightRecordService {
      * @param id 体重ID
      * @return 体重情報
      */
-    public Optional<WeightRecordEntity> findById(Long id) {
-        return weightRecordRepository.findById(id);
+    public WeightRecordEntity findById(Long id) {
+        return weightRecordRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("体重情報が見つかりません"));
     }
 
     /**
@@ -60,7 +63,7 @@ public class WeightRecordService {
 
         PetEntity pet = petRepository
                 .findById(petId)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         weightRecordEntity.setPet(pet);
 
@@ -82,14 +85,16 @@ public class WeightRecordService {
      */
     public WeightRecordEntity update(Long id, WeightRecordRequest weightRecordRequest) {
 
-        WeightRecordEntity targetWeightRecord = weightRecordRepository.findById(id).orElseThrow();
+        WeightRecordEntity targetWeightRecord = weightRecordRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("体重情報が見つかりません"));
 
         // （1）ペットIDからPetEntityを取得
         Long petId = weightRecordRequest.getPetId();
 
         PetEntity pet = petRepository
                 .findById(petId)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         targetWeightRecord.setPet(pet);
 
@@ -109,7 +114,9 @@ public class WeightRecordService {
      */
     public void delete(Long id) {
 
-        WeightRecordEntity targetWeightRecord = weightRecordRepository.findById(id).orElseThrow();
+        WeightRecordEntity targetWeightRecord = weightRecordRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("体重情報が見つかりません"));
 
         weightRecordRepository.delete(targetWeightRecord);
     }

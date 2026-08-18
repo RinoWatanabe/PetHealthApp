@@ -1,12 +1,12 @@
 package com.rino.pethealthapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.rino.pethealthapp.dto.request.PetRequest;
 import com.rino.pethealthapp.entity.PetEntity;
+import com.rino.pethealthapp.exception.ResourceNotFoundException;
 import com.rino.pethealthapp.repository.PetRepository;
 
 @Service
@@ -33,8 +33,10 @@ public class PetService {
      * @param id ペットID
      * @return ペット情報
      */
-    public Optional<PetEntity> findById(Long id) {
-        return petRepository.findById(id);
+    public PetEntity findById(Long id) {
+        return petRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
     }
 
     /**
@@ -68,7 +70,9 @@ public class PetService {
         
         // ↓ 学習用メモ
         // Repositoryへ指示（まずID指定で情報をとってきてもらう）
-        PetEntity targetPet = petRepository.findById(id).orElseThrow();
+        PetEntity targetPet = petRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         // ↓ 学習用メモ
         // ここで画面から受け取った情報に更新する

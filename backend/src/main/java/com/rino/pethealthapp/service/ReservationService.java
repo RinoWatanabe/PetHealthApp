@@ -10,6 +10,7 @@ import com.rino.pethealthapp.dto.request.ReservationRequest;
 import com.rino.pethealthapp.entity.HospitalEntity;
 import com.rino.pethealthapp.entity.PetEntity;
 import com.rino.pethealthapp.entity.ReservationEntity;
+import com.rino.pethealthapp.exception.ResourceNotFoundException;
 import com.rino.pethealthapp.repository.HospitalRepository;
 import com.rino.pethealthapp.repository.PetRepository;
 import com.rino.pethealthapp.repository.ReservationRepository;
@@ -46,8 +47,10 @@ public class ReservationService {
      * @param id 予約ID
      * @return 予約情報
      */
-    public Optional<ReservationEntity> findById(Long id) {
-        return reservationRepository.findById(id);
+    public ReservationEntity findById(Long id) {
+        return reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("予約が見つかりません"));
     }
 
     /**
@@ -65,7 +68,7 @@ public class ReservationService {
 
         PetEntity pet = petRepository
                 .findById(petId)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         reservationEntity.setPet(pet);
 
@@ -98,14 +101,16 @@ public class ReservationService {
      */
     public ReservationEntity update(Long id, ReservationRequest reservationRequest) {
 
-        ReservationEntity targetReservation = reservationRepository.findById(id).orElseThrow();
+        ReservationEntity targetReservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("予約が見つかりません"));
 
         // （1）ペットIDからPetEntityを取得
         Long petId = reservationRequest.getPetId();
 
         PetEntity pet = petRepository
                 .findById(petId)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("ペットが見つかりません"));
 
         targetReservation.setPet(pet);
 
@@ -136,7 +141,9 @@ public class ReservationService {
      */
     public void delete(Long id) {
 
-        ReservationEntity targetReservation = reservationRepository.findById(id).orElseThrow();
+        ReservationEntity targetReservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("予約が見つかりません"));
 
         reservationRepository.delete(targetReservation);
     }

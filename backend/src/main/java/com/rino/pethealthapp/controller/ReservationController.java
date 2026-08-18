@@ -1,7 +1,6 @@
 package com.rino.pethealthapp.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +45,7 @@ public class ReservationController {
      * @return 予約情報
      */
     @GetMapping("/reservations/{id}")
-    public Optional<ReservationEntity> findById(@PathVariable Long id) {
+    public ReservationEntity findById(@PathVariable Long id) {
         return reservationService.findById(id);
     }
 
@@ -65,7 +64,7 @@ public class ReservationController {
     /**
      * 指定したIDの予約情報を更新する.
      * 
-     * @param id                予約ID
+     * @param id                 予約ID
      * @param reservationRequest 更新する予約情報
      * @return 更新した予約情報
      */

@@ -1,0 +1,25 @@
+package com.rino.pethealthapp.dto.response;
+
+public class ApiErrorResponse {
+
+    private int status;
+
+    private String message;
+
+    // =================================
+    // コンストラクタ
+    public ApiErrorResponse(int status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
+    // getter
+    public int getStatus() {
+        return status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+}
